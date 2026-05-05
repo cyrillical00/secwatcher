@@ -1,0 +1,33 @@
+# Global suppression and scan config for Secwatcher.
+# Lives at the root of the control repo. Per-repo overrides go in
+# `.scanner-ignore` at each target repo's root (same schema).
+
+# Schedule reference for human readers; actual cron lives in .github/workflows/scan.yml.
+schedule:
+  full_sweep: "weekly"
+  incremental: "daily"
+
+# Path globs (fnmatch) that always suppress findings on a matched file_path.
+ignore_paths:
+  - "tests/**"
+  - "**/test_*.py"
+  - "**/*.example"
+  - "**/*.sample"
+  - "**/fixtures/**"
+  - "**/__snapshots__/**"
+  - "docs/**/*.md"
+
+# Rule IDs to skip globally. Format: "<scanner>/<rule>".
+ignore_rules: []
+
+# Repos excluded entirely (forks of large external projects, archived demos, etc.).
+ignore_repos: []
+
+# Severity threshold below which findings are dropped before delivery.
+min_severity: "LOW"
+
+# Slack thresholds: which severities trigger immediate per-finding messages
+# vs. which roll up into the digest.
+slack:
+  immediate: ["CRITICAL"]
+  digest: ["HIGH", "MEDIUM", "LOW", "INFO"]

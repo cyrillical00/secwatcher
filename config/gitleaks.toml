@@ -1,0 +1,54 @@
+# Secwatcher custom gitleaks rules.
+# Targets the exact stack the owner integrates with: Okta, GCP, Anthropic, Stripe.
+# Reference: https://github.com/gitleaks/gitleaks#configuration
+
+title = "Secwatcher rules"
+
+[extend]
+# Pull in the upstream defaults; our custom rules append on top.
+useDefault = true
+
+[[rules]]
+id = "okta-api-token"
+description = "Okta API token (SSWS-prefixed)"
+regex = '''SSWS\s+[A-Za-z0-9_-]{40,}'''
+keywords = ["SSWS"]
+tags = ["okta", "key", "secwatcher"]
+
+[[rules]]
+id = "gcp-service-account-json"
+description = "GCP service account JSON committed to repo"
+regex = '''"type"\s*:\s*"service_account"'''
+keywords = ["service_account"]
+path = '''.*\.json$'''
+tags = ["gcp", "service-account", "secwatcher"]
+
+[[rules]]
+id = "anthropic-api-key"
+description = "Anthropic API key"
+regex = '''sk-ant-[A-Za-z0-9_-]{90,}'''
+keywords = ["sk-ant-"]
+tags = ["anthropic", "key", "secwatcher"]
+
+[[rules]]
+id = "stripe-live-secret"
+description = "Stripe live secret key"
+regex = '''sk_live_[A-Za-z0-9]{24,}'''
+keywords = ["sk_live_"]
+tags = ["stripe", "key", "secwatcher"]
+
+[[rules]]
+id = "github-app-private-key"
+description = "GitHub App private key (PEM)"
+regex = '''-----BEGIN (RSA |OPENSSH )?PRIVATE KEY-----'''
+keywords = ["BEGIN PRIVATE KEY", "BEGIN RSA PRIVATE KEY", "BEGIN OPENSSH PRIVATE KEY"]
+tags = ["github", "key", "secwatcher"]
+
+[allowlist]
+description = "Files that are intentionally example fixtures"
+paths = [
+    '''.*\.example$''',
+    '''.*\.sample$''',
+    '''(?i).*/fixtures/.*''',
+    '''(?i).*/tests?/.*''',
+]

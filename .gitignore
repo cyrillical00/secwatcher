@@ -1,0 +1,63 @@
+# Spec/planning docs (kept locally, not committed)
+md-add to gitignore/
+
+# Environment
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# Virtual envs
+.venv/
+venv/
+env/
+ENV/
+
+# uv
+.uv-cache/
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Type checkers
+.mypy_cache/
+.pyright/
+.ruff_cache/
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Secwatcher runtime
+/tmp/
+tmp/
+.scanner-state/
+*.scan.json
+reports/*.md
+reports/*.json
+!reports/.gitkeep
+
+# Local clones during scans
+clones/
