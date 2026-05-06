@@ -58,7 +58,14 @@ jobs:
           REPOSENTRY_SLACK_WEBHOOK: ${{ secrets.REPOSENTRY_SLACK_WEBHOOK }}
         run: |
           mode="${{ inputs.mode || 'scan' }}"
-          uv run secwatcher "$mode"
+          # Skip Slack delivery if no webhook is configured. Once
+          # REPOSENTRY_SLACK_WEBHOOK is set to a real URL, this auto-enables.
+          slack_flag=""
+          if [ -z "$REPOSENTRY_SLACK_WEBHOOK" ]; then
+            echo "::notice::REPOSENTRY_SLACK_WEBHOOK is empty; running with --no-slack"
+            slack_flag="--no-slack"
+          fi
+          uv run secwatcher "$mode" $slack_flag
           uv run secwatcher report --format md --out reports/latest.md
 
       - name: Upload report artifact
