@@ -70,6 +70,11 @@ def _deliver(
     *,
     reports_dir: Path,
 ) -> None:
+    if not settings.slack_webhook:
+        raise ConfigError(
+            "REPOSENTRY_SLACK_WEBHOOK is not set. Either set it in .env / Actions secrets, "
+            "or run with --no-slack to skip Slack delivery."
+        )
     notifier = SlackNotifier(settings.slack_webhook)
     criticals = Orchestrator.critical(result.findings)
     for finding in criticals:

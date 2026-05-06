@@ -17,7 +17,7 @@ class Settings:
     app_id: str
     installation_id: str
     private_key: str
-    slack_webhook: str
+    slack_webhook: str | None
     owner: str | None
 
     @classmethod
@@ -26,7 +26,7 @@ class Settings:
         app_id = os.environ.get("REPOSENTRY_APP_ID", "")
         installation_id = os.environ.get("REPOSENTRY_INSTALLATION_ID", "")
         private_key = os.environ.get("REPOSENTRY_APP_PRIVATE_KEY", "")
-        slack_webhook = os.environ.get("REPOSENTRY_SLACK_WEBHOOK", "")
+        slack_webhook = os.environ.get("REPOSENTRY_SLACK_WEBHOOK") or None
         owner = os.environ.get("REPOSENTRY_OWNER") or None
 
         if not app_id:
@@ -35,8 +35,6 @@ class Settings:
             missing.append("REPOSENTRY_INSTALLATION_ID")
         if not private_key:
             missing.append("REPOSENTRY_APP_PRIVATE_KEY")
-        if not slack_webhook:
-            missing.append("REPOSENTRY_SLACK_WEBHOOK")
 
         if missing:
             raise ConfigError(

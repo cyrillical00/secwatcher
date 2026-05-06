@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import shutil
 import subprocess
 from collections.abc import Callable, Iterable
@@ -24,12 +25,19 @@ class BinaryMissingError(RuntimeError):
 
 
 def _run(cmd: list[str], *, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
+    # Inherit the parent environment (PATH, HOME, SSL_CERT_FILE, etc.) so git can
+    # spawn its own helpers (git-remote-https, etc.) and trufflehog/gitleaks can
+    # find their config dirs. Optional `env` overrides merge on top.
+    merged: dict[str, str] = {**os.environ, **(env or {})}
+    # Force-disable interactive credential prompts so a clone auth failure fails
+    # fast on a cron runner instead of hanging forever.
+    merged.setdefault("GIT_TERMINAL_PROMPT", "0")
     return subprocess.run(
         cmd,
         capture_output=True,
         text=True,
         check=False,
-        env=env or {},
+        env=merged,
     )
 
 
